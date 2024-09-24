@@ -1,0 +1,114 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+
+public class Processor {
+    public static void main(String[] args) {
+        StudentList studentList = new StudentList();
+        Scanner scanner = new Scanner(System.in);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        while (true) {
+            System.out.println("Options:");
+            System.out.println("1. Add a new student");
+            System.out.println("2. Update student by ID");
+            System.out.println("3. Delete student by ID");
+            System.out.println("4. Display all students");
+            System.out.println("5. Find the student with the highest GPA");
+            System.out.println("6. Display scholarship students");
+            System.out.println("7. Calculate total tuition of all students");
+            System.out.println("0. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    // Add a new student
+                    System.out.print("Enter ID: ");
+                    String studentId = scanner.nextLine();
+                    System.out.print("Enter Full Name: ");
+                    String studentName = scanner.nextLine();
+                    System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
+                    Date studentDOB;
+                    try {
+                        studentDOB = dateFormat.parse(scanner.nextLine());
+                    } catch (ParseException e) {
+                        System.out.println("Invalid date format.");
+                        continue;
+                    }
+                    System.out.print("Enter GPA: ");
+                    float gpa = scanner.nextFloat();
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Enter Major: ");
+                    String major = scanner.nextLine();
+                    studentList.addStudent(new Student(studentId, studentName, studentDOB, gpa, major));
+                    break;
+                case 2:
+                    // Update student by ID
+                    System.out.print("Enter ID of student to update: ");
+                    String updateId = scanner.nextLine();
+                    System.out.print("Enter new Full Name: ");
+                    String newName = scanner.nextLine();
+                    System.out.print("Enter new Date of Birth (YYYY-MM-DD): ");
+                    Date newDOB;
+                    try {
+                        newDOB = dateFormat.parse(scanner.nextLine());
+                    } catch (ParseException e) {
+                        System.out.println("Invalid date format.");
+                        continue;
+                    }
+                    System.out.print("Enter new GPA: ");
+                    float newGpa = scanner.nextFloat();
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Enter new Major: ");
+                    String newMajor = scanner.nextLine();
+                    studentList.updateStudentById(updateId, new Student(updateId, newName, newDOB, newGpa, newMajor));
+                    break;
+                case 3:
+                    // Delete student by ID
+                    System.out.print("Enter ID to delete: ");
+                    String deleteId = scanner.nextLine();
+                    studentList.deleteStudentById(deleteId);
+                    break;
+                case 4:
+                    // Display all students
+                    studentList.displayAllStudents();
+                    break;
+                case 5:
+                    // Find the student with the highest GPA
+                    Student topStudent = studentList.findTopStudent();
+                    if (topStudent != null) {
+                        topStudent.displayInfo();
+                    } else {
+                        System.out.println("No students found.");
+                    }
+                    break;
+                case 6:
+                    // Display scholarship students
+                    ArrayList<Student> scholarshipStudents = studentList.findScholarshipStudents();
+                    if (!scholarshipStudents.isEmpty()) {
+                        for (Student student : scholarshipStudents) {
+                            student.displayInfo();
+                        }
+                    } else {
+                        System.out.println("No scholarship students found.");
+                    }
+                    break;
+                case 7:
+                    // Calculate total tuition of all students
+                    double totalTuition = studentList.calculateTuitionOfAllStudents();
+                    System.out.printf("Total tuition of all students: %.2f%n", totalTuition);
+                    break;
+                case 0:
+                    // Exit
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid option, try again.");
+            }
+        }
+    }
+}
